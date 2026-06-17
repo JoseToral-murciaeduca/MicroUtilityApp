@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Precio Actual de la Luz"
+        android:textSize="18sp"
+        android:layout_marginTop="32dp"/>
+
+    <TextView
+        android:id="@+id/tvPrecioActual"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cargando..."
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+
+        <ImageView
+            android:id="@+id/ivLogoFuente"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="Logo Compañía"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fuente: Red Eléctrica de España"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:textColor="#666666"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnVer24h"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ver últimas 24 horas"
+        android:layout_marginBottom="16dp"/>
+
+    <ScrollView
+        android:id="@+id/scroll24h"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvListaPrecios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:lineSpacingExtra="8dp"/>
+    </ScrollView>
+
+</LinearLayout>
