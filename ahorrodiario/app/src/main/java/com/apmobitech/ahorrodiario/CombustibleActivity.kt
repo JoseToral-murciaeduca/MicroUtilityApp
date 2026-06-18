@@ -18,6 +18,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.apmobitech.ahorrodiario.database.AppDatabase
+import com.apmobitech.ahorrodiario.database.GasolineraFavorita
 import com.apmobitech.ahorrodiario.network.GasolineraJson
 import com.apmobitech.ahorrodiario.network.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
@@ -26,11 +28,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
+// Objeto auxiliar que combina los datos del gobierno con el "estado" de si es tu favorita o no
+data class GasolineraUI(val datos: GasolineraJson, var esFavorita: Boolean)
+
 class CombustibleActivity : AppCompatActivity() {
 
     private val PERMISSION_REQUEST_LOCATION = 1001
-
-    // Variables dinámicas que leeremos de la Configuración
     private var radioBusquedaKm = 100.0
     private var capacidadDeposito = 50.0
 
@@ -38,7 +41,6 @@ class CombustibleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_combustible)
 
-        // LEEMOS LOS AJUSTES GLOBALES DEL USUARIO
         val prefs = getSharedPreferences("AjustesGlobales", Context.MODE_PRIVATE)
         radioBusquedaKm = prefs.getFloat("radio_km", 100f).toDouble()
         capacidadDeposito = prefs.getFloat("deposito_l", 50f).toDouble()
@@ -92,7 +94,6 @@ class CombustibleActivity : AppCompatActivity() {
                 latitude = 38.1824
                 longitude = -1.1246
             }
-            Toast.makeText(this, "Emulador detectado. Usando ubicación de Murcia.", Toast.LENGTH_SHORT).show()
         }
 
         descargarDatosMinisterio(miUbicacion)
@@ -103,9 +104,8 @@ class CombustibleActivity : AppCompatActivity() {
         val tvGasolineraBarata = findViewById<TextView>(R.id.tvGasolineraBarata)
         val lvGasolineras = findViewById<ListView>(R.id.lvGasolineras)
 
-        // Actualizamos dinámicamente el texto estático de la pantalla
         val textoTituloDeposito = "Llenar depósito (${capacidadDeposito.toInt()}L)"
-        findViewById<TextView>(R.id.tvCosteLlenado).let { // Trampa para acceder al textview del titulo
+        findViewById<TextView>(R.id.tvCosteLlenado).let {
             val layout = it.parent as android.widget.LinearLayout
             val titulo = layout.getChildAt(0) as TextView
             titulo.text = textoTituloDeposito
@@ -113,38 +113,58 @@ class CombustibleActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                // 1. Leemos las favoritas de nuestra base de datos local
+                val dao = AppDatabase.getDatabase(this@CombustibleActivity).gasolineraDao()
+                val listaFavoritasDB = dao.obtenerTodas()
+
+                // 2. Descargamos las estaciones del Gobierno
                 val respuesta = RetrofitClient.fuelApi.getGasolineras()
                 val listaSegura = respuesta.listaGasolineras ?: emptyList()
 
-                val gasolinerasFiltradas = listaSegura.filter { gasolinera ->
+                // 3. Filtramos y creamos la lista visual
+                val listaVisual = mutableListOf<GasolineraUI>()
+
+                for (gasolinera in listaSegura) {
+                    val idGas = gasolinera.id ?: ""
+                    val esFav = listaFavoritasDB.any { it.idEstacion == idGas }
+
                     val latLimpiada = gasolinera.latitud?.replace(",", ".")?.replace(" ", "")
                     val lonLimpiada = gasolinera.longitud?.replace(",", ".")?.replace(" ", "")
-
                     val latGas = latLimpiada?.toDoubleOrNull()
                     val lonGas = lonLimpiada?.toDoubleOrNull()
 
-                    if (latGas != null && lonGas != null) {
+                    // TRUCO: Si es favorita, la incluimos SIEMPRE, sin importar la distancia
+                    if (esFav) {
+                        listaVisual.add(GasolineraUI(gasolinera, true))
+                    } else if (latGas != null && lonGas != null) {
                         val distancia = calcularDistanciaHaversine(
                             ubicacionUsuario.latitude, ubicacionUsuario.longitude,
                             latGas, lonGas
                         )
-                        distancia <= radioBusquedaKm
-                    } else {
-                        false
+                        if (distancia <= radioBusquedaKm) {
+                            listaVisual.add(GasolineraUI(gasolinera, false))
+                        }
                     }
                 }
 
+                // 4. Ordenamos: Primero las favoritas, luego las más baratas
+                val listaOrdenada = listaVisual.sortedWith(
+                    compareByDescending<GasolineraUI> { it.esFavorita }
+                        .thenBy {
+                            it.datos.precioDiesel?.replace(",", ".")?.replace(" ", "")?.toDoubleOrNull() ?: Double.MAX_VALUE
+                        }
+                )
+
+                // 5. Calculamos la más barata PARA EL TITULO (solo entre las que NO son favoritas para ser objetivos con la zona)
                 var precioDieselMasBarato = Double.MAX_VALUE
                 var nombreBarata = ""
+                val listaSoloCercanas = listaOrdenada.filter { !it.esFavorita } // Las favoritas de otra ciudad no deben estropear el récord de tu zona actual
 
-                for (g in gasolinerasFiltradas) {
-                    val precioLimpio = g.precioDiesel?.replace(",", ".")?.replace(" ", "")
-                    if (!precioLimpio.isNullOrEmpty()) {
-                        val precioNum = precioLimpio.toDoubleOrNull()
-                        if (precioNum != null && precioNum < precioDieselMasBarato) {
-                            precioDieselMasBarato = precioNum
-                            nombreBarata = g.rotulo ?: "Desconocida"
-                        }
+                for (g in listaSoloCercanas) {
+                    val precioNum = g.datos.precioDiesel?.replace(",", ".")?.replace(" ", "")?.toDoubleOrNull()
+                    if (precioNum != null && precioNum < precioDieselMasBarato) {
+                        precioDieselMasBarato = precioNum
+                        nombreBarata = g.datos.rotulo ?: "Desconocida"
                     }
                 }
 
@@ -161,32 +181,61 @@ class CombustibleActivity : AppCompatActivity() {
                         tvGasolineraBarata.text = "Ninguna estación a ${radioBusquedaKm.toInt()}km de [$latStr, $lonStr]."
                     }
 
-                    val adapter = object : ArrayAdapter<GasolineraJson>(this@CombustibleActivity, R.layout.item_gasolinera, gasolinerasFiltradas) {
+                    // 6. El Adaptador visual de la lista
+                    val adapter = object : ArrayAdapter<GasolineraUI>(this@CombustibleActivity, R.layout.item_gasolinera, listaOrdenada) {
                         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                             val view = convertView ?: layoutInflater.inflate(R.layout.item_gasolinera, parent, false)
-                            val item = getItem(position)
+                            val item = getItem(position)!!
 
                             val tvRotulo = view.findViewById<TextView>(R.id.tvRotulo)
                             val tvDireccion = view.findViewById<TextView>(R.id.tvDireccion)
                             val tvPrecioDiesel = view.findViewById<TextView>(R.id.tvPrecioDiesel)
                             val tvPrecioGasolina = view.findViewById<TextView>(R.id.tvPrecioGasolina)
+                            val btnFavorito = view.findViewById<ImageButton>(R.id.btnFavorito)
 
-                            tvRotulo.text = item?.rotulo ?: "Sin Rótulo"
-                            tvDireccion.text = "${item?.direccion ?: ""} (${item?.municipio ?: ""})"
+                            tvRotulo.text = item.datos.rotulo ?: "Sin Rótulo"
+                            tvDireccion.text = "${item.datos.direccion ?: ""} (${item.datos.municipio ?: ""})"
 
-                            val txtDiesel = if (item?.precioDiesel.isNullOrEmpty()) "N/A" else "${item?.precioDiesel} €"
-                            val txtGasolina = if (item?.precioGasolina95.isNullOrEmpty()) "N/A" else "${item?.precioGasolina95} €"
+                            val txtDiesel = if (item.datos.precioDiesel.isNullOrEmpty()) "N/A" else "${item.datos.precioDiesel} €"
+                            val txtGasolina = if (item.datos.precioGasolina95.isNullOrEmpty()) "N/A" else "${item.datos.precioGasolina95} €"
 
                             tvPrecioDiesel.text = "Diésel: $txtDiesel"
                             tvPrecioGasolina.text = "Gasolina 95: $txtGasolina"
 
+                            // Pintar estrella
+                            if (item.esFavorita) {
+                                btnFavorito.setImageResource(android.R.drawable.btn_star_big_on)
+                            } else {
+                                btnFavorito.setImageResource(android.R.drawable.btn_star_big_off)
+                            }
+
+                            // Acción al pulsar la estrella
+                            btnFavorito.setOnClickListener {
+                                item.esFavorita = !item.esFavorita
+                                notifyDataSetChanged() // Refresca el icono al instante
+
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val daoAccion = AppDatabase.getDatabase(context).gasolineraDao()
+                                    if (item.esFavorita) {
+                                        daoAccion.insertar(GasolineraFavorita(
+                                            idEstacion = item.datos.id ?: "",
+                                            rotulo = item.datos.rotulo ?: "",
+                                            latitud = item.datos.latitud ?: "",
+                                            longitud = item.datos.longitud ?: ""
+                                        ))
+                                    } else {
+                                        daoAccion.eliminar(item.datos.id ?: "")
+                                    }
+                                }
+                            }
                             return view
                         }
                     }
                     lvGasolineras.adapter = adapter
 
+                    // Acción al pulsar la fila (GPS)
                     lvGasolineras.setOnItemClickListener { _, _, position, _ ->
-                        val gasolineraSeleccionada = gasolinerasFiltradas[position]
+                        val gasolineraSeleccionada = listaOrdenada[position].datos
                         val latStrLimpia = gasolineraSeleccionada.latitud?.replace(",", ".")?.replace(" ", "")
                         val lonStrLimpia = gasolineraSeleccionada.longitud?.replace(",", ".")?.replace(" ", "")
 
@@ -199,8 +248,6 @@ class CombustibleActivity : AppCompatActivity() {
                             } catch (e: Exception) {
                                 Toast.makeText(this@CombustibleActivity, "No se encontró app de mapas", Toast.LENGTH_SHORT).show()
                             }
-                        } else {
-                            Toast.makeText(this@CombustibleActivity, "Coordenadas no disponibles", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

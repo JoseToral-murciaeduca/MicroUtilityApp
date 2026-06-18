@@ -1,19 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android) // <-- AÑADE ESTA LÍNEA AQUÍ
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.apmobitech.ahorrodiario"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.apmobitech.ahorrodiario"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -31,6 +29,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11) // o JVM_17 si usas Java 17
+        }
+    }
 }
 
 dependencies {
@@ -38,6 +41,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.core.ktx)
     implementation(libs.material)
     implementation(libs.play.services.maps3d)
     testImplementation(libs.junit)
@@ -49,4 +53,20 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     // Librería para cargar imágenes desde URLs de internet
     implementation("io.coil-kt:coil:2.6.0")
+    // Base de datos Room
+    val room_version = "2.5.2"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    // MPAndroid Chart (Con el bloqueo aislado)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") {
+        exclude(group = "com.intellij", module = "annotations")
+    }
+
+    configurations.configureEach {
+        // Si la configuración NO es de kapt, aplicamos el bloqueo
+        if (!name.lowercase().contains("kapt")) {
+            exclude(group = "com.intellij", module = "annotations")
+        }
+    }
 }
