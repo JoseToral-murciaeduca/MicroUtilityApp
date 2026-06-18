@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/etBuscarCompania"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Escribe para buscar..."
+        android:inputType="text"
+        android:maxLines="1"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="8dp"
+        android:layout_marginBottom="12dp"/>
+
+    <ListView
+        android:id="@+id/listViewCompanias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:choiceMode="multipleChoice" />
+</LinearLayout>

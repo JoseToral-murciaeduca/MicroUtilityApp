@@ -2,4 +2,5 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-</resources>
+
+    <color name="fondo_pantalla">#F3F4F6</color>     <color name="fondo_tarjeta">#FFFFFF</color>      <color name="texto_principal">#1F2937</color>    <color name="texto_secundario">#6B7280</color>   <color name="fondo_spinner">#4B5563</color>      </resources>

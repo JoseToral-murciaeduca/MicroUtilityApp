@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/fondo_pantalla"
+    android:padding="24dp"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ahorro Diario"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/texto_principal"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="¿Qué quieres consultar hoy?"
+        android:textSize="16sp"
+        android:textColor="@color/texto_secundario"
+        android:layout_marginBottom="32dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginBottom="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardLuz"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/fondo_tarjeta"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚡" android:textSize="40sp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Electricidad" android:textStyle="bold" android:textColor="@color/texto_principal" android:layout_marginTop="12dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCombustible"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/fondo_tarjeta"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⛽" android:textSize="40sp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Combustible" android:textStyle="bold" android:textColor="@color/texto_principal" android:layout_marginTop="12dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardGas"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/fondo_tarjeta"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔥" android:textSize="40sp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Gas Natural" android:textStyle="bold" android:textColor="@color/texto_principal" android:layout_marginTop="12dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardAjustes"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/fondo_tarjeta"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚙️" android:textSize="40sp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Configuración" android:textStyle="bold" android:textColor="@color/texto_principal" android:layout_marginTop="12dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</LinearLayout>

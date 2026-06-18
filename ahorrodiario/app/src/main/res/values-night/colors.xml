@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fondo_pantalla">#121212</color>     <color name="fondo_tarjeta">#1E1E1E</color>      <color name="texto_principal">#FFFFFF</color>    <color name="texto_secundario">#9CA3AF</color>   <color name="fondo_spinner">#374151</color>      </resources>

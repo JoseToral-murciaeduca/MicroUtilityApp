@@ -4,14 +4,23 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    // La dirección principal del servidor del Gobierno
-    private const val BASE_URL = "https://apidatos.ree.es/"
 
-    val api: ReeApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ReeApi::class.java)
-    }
+    // --- MOTOR 1: RED ELÉCTRICA (Para la Luz) ---
+    private val retrofitLuz = Retrofit.Builder()
+        .baseUrl("https://apidatos.ree.es/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    // Corregido: Ahora usa ReeApi, que es el nombre real de tu archivo
+    val api: ReeApi = retrofitLuz.create(ReeApi::class.java)
+
+
+    // --- MOTOR 2: MINISTERIO (Para el Combustible) ---
+    private val retrofitCombustible = Retrofit.Builder()
+        .baseUrl("https://sedeaplicaciones.minetur.gob.es/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    // Este es el objeto que llamaremos desde la pantalla de la gasolina
+    val fuelApi: FuelApiService = retrofitCombustible.create(FuelApiService::class.java)
 }

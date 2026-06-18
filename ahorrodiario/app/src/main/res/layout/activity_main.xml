@@ -1,72 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center_horizontal">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Precio Actual de la Luz"
-        android:textSize="18sp"
-        android:layout_marginTop="32dp"/>
-
-    <TextView
-        android:id="@+id/tvPrecioActual"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cargando..."
-        android:textSize="48sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"/>
+    android:background="@color/fondo_pantalla"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="32dp">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="@color/fondo_pantalla">
 
-        <ImageView
-            android:id="@+id/ivLogoFuente"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:contentDescription="Logo Compañía"/>
+        <ImageButton
+            android:id="@+id/btnVolverElectricidad"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/texto_principal"
+            android:contentDescription="Volver" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fuente: Red Eléctrica de España"
-            android:textSize="14sp"
-            android:layout_marginTop="8dp"
-            android:textColor="#666666"/>
+            android:text="Electricidad"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/texto_principal"
+            android:layout_marginStart="16dp"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnVer24h"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ver últimas 24 horas"
-        android:layout_marginBottom="16dp"/>
-
     <ScrollView
-        android:id="@+id/scroll24h"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="gone">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false">
 
-        <TextView
-            android:id="@+id/tvListaPrecios"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:lineSpacingExtra="8dp"/>
-    </ScrollView>
+            android:orientation="vertical">
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/fondo_tarjeta"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Selecciona tu compañía"
+                        android:textSize="12sp"
+                        android:textColor="@color/texto_secundario"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:layout_marginBottom="4dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerCompania"
+                            android:layout_width="0dp"
+                            android:layout_height="54dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/fondo_spinner"/>
+
+                        <ImageButton
+                            android:id="@+id/btnOpcionesEnergia"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@android:drawable/ic_menu_preferences"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            app:tint="@color/texto_secundario"
+                            android:contentDescription="Opciones de Energía" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Precio Actual"
+                        android:textSize="14sp"
+                        android:textColor="@color/texto_secundario"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"/>
+
+                    <TextView
+                        android:id="@+id/tvPrecioActual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-- €"
+                        android:textSize="56sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/texto_principal"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <ImageView
+                        android:id="@+id/ivLogoFuente"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginBottom="8dp"
+                        android:contentDescription="Logo Compañía"/>
+
+                    <TextView
+                        android:id="@+id/tvNombreFuente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cargando..."
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/texto_secundario"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnVer24h"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Ver últimas 24 horas"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <ScrollView
+                android:id="@+id/scroll24h"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/fondo_tarjeta">
+
+                    <TextView
+                        android:id="@+id/tvListaPrecios"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/texto_principal"
+                        android:fontFamily="monospace"/>
+                </androidx.cardview.widget.CardView>
+            </ScrollView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/fondo_pantalla"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/btnVolverConfig"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/texto_secundario"
+            android:contentDescription="Volver" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configuración"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/texto_principal"
+            android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apariencia"
+                android:textSize="14sp"
+                android:textColor="@color/texto_secundario"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/fondo_tarjeta">
+
+                <RadioGroup
+                    android:id="@+id/rgTema"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <RadioButton
+                        android:id="@+id/rbTemaSistema"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Automático (Según el sistema)"
+                        android:textColor="@color/texto_principal"
+                        android:padding="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbTemaClaro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Modo Claro"
+                        android:textColor="@color/texto_principal"
+                        android:padding="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbTemaOscuro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Modo Oscuro"
+                        android:textColor="@color/texto_principal"
+                        android:padding="8dp"/>
+                </RadioGroup>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ajustes de Combustible"
+                android:textSize="14sp"
+                android:textColor="@color/texto_secundario"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/fondo_tarjeta">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Radio de búsqueda (Kilómetros)"
+                        android:textSize="12sp"
+                        android:textColor="@color/texto_secundario"
+                        android:layout_marginBottom="4dp"/>
+
+                    <EditText
+                        android:id="@+id/etRadioKm"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:inputType="numberDecimal"
+                        android:backgroundTint="@color/texto_secundario"
+                        android:textColor="@color/texto_principal"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Capacidad de tu depósito (Litros)"
+                        android:textSize="12sp"
+                        android:textColor="@color/texto_secundario"
+                        android:layout_marginBottom="4dp"/>
+
+                    <EditText
+                        android:id="@+id/etDepositoL"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:inputType="numberDecimal"
+                        android:backgroundTint="@color/texto_secundario"
+                        android:textColor="@color/texto_principal"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Privacidad"
+                android:textSize="14sp"
+                android:textColor="@color/texto_secundario"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/fondo_tarjeta">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Permisos de Ubicación"
+                        android:textSize="16sp"
+                        android:textColor="@color/texto_principal"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Si has denegado el acceso al GPS y no puedes ver las gasolineras, pulsa aquí para abrir los ajustes de Android y reactivarlo manualmente."
+                        android:textSize="14sp"
+                        android:textColor="@color/texto_secundario"
+                        android:layout_marginBottom="16dp"/>
+
+                    <Button
+                        android:id="@+id/btnAbrirAjustesUbicacion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Abrir Ajustes del Sistema"
+                        android:textColor="@color/texto_principal"
+                        android:backgroundTint="@color/fondo_spinner"
+                        app:cornerRadius="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnGuardarConfig"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Guardar Configuración"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ahorro Diario v1.0\nDesarrollado para optimizar tu economía."
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:textColor="@color/texto_secundario"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
