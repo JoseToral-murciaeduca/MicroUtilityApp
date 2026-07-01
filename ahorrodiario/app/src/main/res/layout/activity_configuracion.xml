@@ -100,64 +100,67 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ajustes de Combustible"
-                android:textSize="14sp"
-                android:textColor="@color/texto_secundario"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"/>
-
-            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:text="⛽ Combustible de tu vehículo"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/texto_principal"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/fondo_tarjeta">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_marginEnd="8dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Radio de búsqueda (Kilómetros)"
+                        android:text="Tipo principal"
                         android:textSize="12sp"
-                        android:textColor="@color/texto_secundario"
-                        android:layout_marginBottom="4dp"/>
+                        android:textColor="@color/texto_secundario"/>
 
-                    <EditText
-                        android:id="@+id/etRadioKm"
+                    <Spinner
+                        android:id="@+id/spinnerPrincipal"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:inputType="numberDecimal"
-                        android:backgroundTint="@color/texto_secundario"
-                        android:textColor="@color/texto_principal"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Capacidad de tu depósito (Litros)"
-                        android:textSize="12sp"
-                        android:textColor="@color/texto_secundario"
-                        android:layout_marginBottom="4dp"/>
-
-                    <EditText
-                        android:id="@+id/etDepositoL"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:inputType="numberDecimal"
-                        android:backgroundTint="@color/texto_secundario"
-                        android:textColor="@color/texto_principal"/>
+                        android:layout_height="48dp"
+                        android:background="@drawable/fondo_spinner"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/layoutSubtipo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Especificación"
+                        android:textSize="12sp"
+                        android:textColor="@color/texto_secundario"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerSubtipo"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/fondo_spinner"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"

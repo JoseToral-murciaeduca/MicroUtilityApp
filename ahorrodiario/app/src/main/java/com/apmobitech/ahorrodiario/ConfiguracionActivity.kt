@@ -1,18 +1,12 @@
 package com.apmobitech.ahorrodiario
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Toast
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 
 class ConfiguracionActivity : AppCompatActivity() {
 
@@ -20,80 +14,65 @@ class ConfiguracionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_configuracion)
 
-        val btnVolver = findViewById<ImageButton>(R.id.btnVolverConfig)
-        val etRadioKm = findViewById<EditText>(R.id.etRadioKm)
-        val etDepositoL = findViewById<EditText>(R.id.etDepositoL)
-        val btnGuardar = findViewById<Button>(R.id.btnGuardarConfig)
-        val btnAbrirAjustes = findViewById<Button>(R.id.btnAbrirAjustesUbicacion)
+        // Habilitar la flecha de volver atrás nativa en la barra superior
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        val rgTema = findViewById<RadioGroup>(R.id.rgTema)
-        val rbTemaSistema = findViewById<RadioButton>(R.id.rbTemaSistema)
-        val rbTemaClaro = findViewById<RadioButton>(R.id.rbTemaClaro)
-        val rbTemaOscuro = findViewById<RadioButton>(R.id.rbTemaOscuro)
+        val spinnerPrincipal = findViewById<Spinner>(R.id.spinnerPrincipal)
+        val spinnerSubtipo = findViewById<Spinner>(R.id.spinnerSubtipo)
+        val prefsGlobal = getSharedPreferences("AjustesGlobales", Context.MODE_PRIVATE)
 
-        // --- 1. LEER LOS DATOS ACTUALES ---
-        val prefs = getSharedPreferences("AjustesGlobales", Context.MODE_PRIVATE)
-        val radioActual = prefs.getFloat("radio_km", 100f)
-        val depositoActual = prefs.getFloat("deposito_l", 50f)
-        val temaActual = prefs.getInt("modo_oscuro", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        // 1. Definimos las opciones
+        val tiposPrincipales = arrayOf("Diésel", "Gasolina", "Gas", "Electricidad")
+        val opcionesDiesel = arrayOf("Normal", "Plus")
+        val opcionesGasolina = arrayOf("95", "98")
+        val opcionesGas = arrayOf("GNC", "GLP")
+        val opcionesElectrico = arrayOf("Estándar")
 
-        // Pintar Combustible
-        etRadioKm.setText(radioActual.toString())
-        etDepositoL.setText(depositoActual.toString())
+        // 2. Configuramos el adaptador del menú principal
+        val adapterPrincipal = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, tiposPrincipales)
+        spinnerPrincipal.adapter = adapterPrincipal
 
-        // Pintar Selección de Tema
-        when (temaActual) {
-            AppCompatDelegate.MODE_NIGHT_NO -> rbTemaClaro.isChecked = true
-            AppCompatDelegate.MODE_NIGHT_YES -> rbTemaOscuro.isChecked = true
-            else -> rbTemaSistema.isChecked = true
-        }
+        val tipoGuardado = prefsGlobal.getString("vehiculo_principal", "Diésel")
+        val indicePrincipal = tiposPrincipales.indexOf(tipoGuardado).takeIf { it >= 0 } ?: 0
+        spinnerPrincipal.setSelection(indicePrincipal)
 
-        // --- 2. ACCIONES DE BOTONES ---
-        btnVolver.setOnClickListener { finish() }
+        // 3. Lógica dinámica de selección
+        spinnerPrincipal.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val seleccionPrincipal = tiposPrincipales[position]
+                prefsGlobal.edit().putString("vehiculo_principal", seleccionPrincipal).apply()
 
-        // Botón de ayuda para el GPS (Abre la ficha técnica de tu app en los ajustes del móvil)
-        btnAbrirAjustes.setOnClickListener {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
-
-        // Botón Guardar Maestro
-        btnGuardar.setOnClickListener {
-            val textoRadio = etRadioKm.text.toString()
-            val textoDeposito = etDepositoL.text.toString()
-
-            if (textoRadio.isNotEmpty() && textoDeposito.isNotEmpty()) {
-                try {
-                    val nuevoRadio = textoRadio.toFloat()
-                    val nuevoDeposito = textoDeposito.toFloat()
-
-                    // Averiguar qué tema ha elegido
-                    val nuevoTema = when (rgTema.checkedRadioButtonId) {
-                        R.id.rbTemaClaro -> AppCompatDelegate.MODE_NIGHT_NO
-                        R.id.rbTemaOscuro -> AppCompatDelegate.MODE_NIGHT_YES
-                        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    }
-
-                    // Guardar en memoria
-                    prefs.edit()
-                        .putFloat("radio_km", nuevoRadio)
-                        .putFloat("deposito_l", nuevoDeposito)
-                        .putInt("modo_oscuro", nuevoTema)
-                        .apply()
-
-                    // Aplicar el tema visual al instante en toda la app
-                    AppCompatDelegate.setDefaultNightMode(nuevoTema)
-
-                    Toast.makeText(this, "Ajustes aplicados correctamente", Toast.LENGTH_SHORT).show()
-                    finish()
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Error de formato. Usa punto para decimales.", Toast.LENGTH_LONG).show()
+                val listaSubtipo = when (seleccionPrincipal) {
+                    "Diésel" -> opcionesDiesel
+                    "Gasolina" -> opcionesGasolina
+                    "Gas" -> opcionesGas
+                    else -> opcionesElectrico
                 }
-            } else {
-                Toast.makeText(this, "Los campos de combustible no pueden estar vacíos", Toast.LENGTH_SHORT).show()
+
+                val adapterSubtipo = ArrayAdapter(this@ConfiguracionActivity, android.R.layout.simple_spinner_dropdown_item, listaSubtipo)
+                spinnerSubtipo.adapter = adapterSubtipo
+
+                val subtipoGuardado = prefsGlobal.getString("vehiculo_subtipo", listaSubtipo[0])
+                val indexSubtipo = listaSubtipo.indexOf(subtipoGuardado).takeIf { it >= 0 } ?: 0
+                spinnerSubtipo.setSelection(indexSubtipo)
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+        spinnerSubtipo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val subtipoSeleccionado = spinnerSubtipo.selectedItem.toString()
+                prefsGlobal.edit().putString("vehiculo_subtipo", subtipoSeleccionado).apply()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    // Al pulsar la flecha atrás nativa de la barra superior, cerramos la pantalla y volvemos al menú
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
     }
 }
