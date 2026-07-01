@@ -62,6 +62,12 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") {
         exclude(group = "com.intellij", module = "annotations")
     }
+    // Efecto de carga Shimmer (Faceboo)
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    // WorkManager para tareas en segundo plano
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
+    // Google AdMob para monetización
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
 
     configurations.configureEach {
         // Si la configuración NO es de kapt, aplicamos el bloqueo

@@ -104,6 +104,13 @@ class CombustibleActivity : AppCompatActivity() {
         val tvGasolineraBarata = findViewById<TextView>(R.id.tvGasolineraBarata)
         val lvGasolineras = findViewById<ListView>(R.id.lvGasolineras)
 
+        // --- 1. REFERENCIAMOS Y ARRANCAMOS EL SHIMMER ---
+        val shimmerContainer = findViewById<com.facebook.shimmer.ShimmerFrameLayout>(R.id.shimmer_view_container)
+        shimmerContainer.startShimmer()
+        shimmerContainer.visibility = View.VISIBLE
+        lvGasolineras.visibility = View.GONE
+        // ------------------------------------------------
+
         val textoTituloDeposito = "Llenar depósito (${capacidadDeposito.toInt()}L)"
         findViewById<TextView>(R.id.tvCosteLlenado).let {
             val layout = it.parent as android.widget.LinearLayout
@@ -169,6 +176,12 @@ class CombustibleActivity : AppCompatActivity() {
                 }
 
                 withContext(Dispatchers.Main) {
+                    // --- 2. PARAMOS EL SHIMMER Y MOSTRAMOS LA LISTA ---
+                    shimmerContainer.stopShimmer()
+                    shimmerContainer.visibility = View.GONE
+                    lvGasolineras.visibility = View.VISIBLE
+                    // --------------------------------------------------
+
                     val latStr = String.format(Locale.getDefault(), "%.2f", ubicacionUsuario.latitude)
                     val lonStr = String.format(Locale.getDefault(), "%.2f", ubicacionUsuario.longitude)
 
@@ -254,6 +267,11 @@ class CombustibleActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    // --- 3. PARAMOS EL SHIMMER SI HAY ERROR ---
+                    val shimmerContainer = findViewById<com.facebook.shimmer.ShimmerFrameLayout>(R.id.shimmer_view_container)
+                    shimmerContainer.stopShimmer()
+                    shimmerContainer.visibility = View.GONE
+
                     Toast.makeText(this@CombustibleActivity, "Error de red: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
